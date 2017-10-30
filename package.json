@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitfinexcom/bfx-svc-js.git"
+    "url": "git+https://github.com/bitfinexcom/bfx-ext-js.git"
   },
   "maintainers": [
     {
