@@ -1,4 +1,4 @@
-# bfx-ext
+# bfx-ext - Bitfinex External
 
 ## Setup
 

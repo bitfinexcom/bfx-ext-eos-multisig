@@ -2,7 +2,7 @@
   "name": "bfx-ext-js",
   "version": "0.0.5",
   "private": true,
-  "description": "Bitfinex Service",
+  "description": "Bitfinex External Service",
   "author": {
     "name": "prdn",
     "email": "paolo@bitfinex.com"
