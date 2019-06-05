@@ -1,0 +1,43 @@
+{
+  "name": "bfx-ext-js",
+  "version": "0.0.5",
+  "private": true,
+  "description": "Bitfinex External Service",
+  "author": {
+    "name": "prdn",
+    "email": "paolo@bitfinex.com"
+  },
+  "keywords": [
+    "bitfinex"
+  ],
+  "dependencies": {
+    "async": "^2.6.1",
+    "bfx-facs-api": "git+https://github.com/bitfinexcom/bfx-facs-api.git",
+    "bfx-facs-base": "git+https://github.com/bitfinexcom/bfx-facs-base.git",
+    "bfx-facs-grc": "git+https://github.com/bitfinexcom/bfx-facs-grc.git",
+    "bfx-facs-interval": "https://github.com/bitfinexcom/bfx-facs-interval.git",
+    "bfx-svc-boot-js": "https://github.com/bitfinexcom/bfx-svc-boot-js.git",
+    "bfx-wrk-api": "git+https://github.com/bitfinexcom/bfx-wrk-api.git",
+    "bfx-wrk-base": "git+https://github.com/bitfinexcom/bfx-wrk-base.git",
+    "lodash": "^4.17.10",
+    "yargs": "^12.0.2"
+  },
+  "engine": {
+    "node": ">=8.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitfinexcom/bfx-ext-js.git"
+  },
+  "maintainers": [
+    {
+      "name": "prdn",
+      "email": "paolo@bitfinex.com"
+    }
+  ],
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "standard": "^12.0.1"
+  }
+}
