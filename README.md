@@ -17,6 +17,30 @@ git remote add upstream https://github.com/bitfinexcom/bfx-ext-js
 bash setup-config.sh
 ```
 
+Setup a useraccount with multiple keys, example for an existing account
+(`testuser1511`):
+
+```
+PRIVATE_KEY='SECRET'
+
+# create dev wallet
+./cleos wallet create --name devwallet --file devwallet
+cat devwallet # your secret wallet key
+
+# unlock wallet
+./cleos wallet unlock -n devwallet
+
+# import key for user
+./cleos wallet import -n devwallet --private-key $PRIVATE_KEY
+
+# change permissions to use 2 keys for testuser1511@active
+# references two public keys:
+cleos set account permission testuser1511 active '{"threshold" : 100, "keys" : [{"key": "EOS6jLRVDbXkjsRELh4g4mdrGwSSzwCvWhPBjU7vynsTvvzwsHEfM","weight": 50}, {"key": "EOS8avaS8TiqEhzoZ8kMKnhSXuRpJ1NyLeSkJcX2eWYW5vtEzGESM","weight": 50}]}' -p testuser1511@owner
+
+# verify changed keys
+./cleos get account testuser1511
+
+```
 
 ### Boot worker
 

@@ -1,0 +1,11 @@
+{
+  "chainId": "MY_CHAIN",
+  "key1": "SECRET",
+  "key2": "SECRET",
+  "httpEndpoint": "http://___MY_EOS_NODE___",
+  "contract": "",
+  "authorization": [{
+    "actor": "",
+    "permission": "active"
+  }]
+}
