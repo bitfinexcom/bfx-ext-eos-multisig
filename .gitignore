@@ -8,3 +8,4 @@ config/facs/*.json
 logs
 sec
 package-lock.json
+db

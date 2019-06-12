@@ -4,8 +4,8 @@
   "private": true,
   "description": "Bitfinex External Service",
   "author": {
-    "name": "prdn",
-    "email": "paolo@bitfinex.com"
+    "name": "robert",
+    "email": "robert@bitfinex.com"
   },
   "keywords": [
     "bitfinex"
@@ -19,27 +19,25 @@
     "bfx-svc-boot-js": "https://github.com/bitfinexcom/bfx-svc-boot-js.git",
     "bfx-wrk-api": "git+https://github.com/bitfinexcom/bfx-wrk-api.git",
     "bfx-wrk-base": "git+https://github.com/bitfinexcom/bfx-wrk-base.git",
-    "eosjs": "^20.0.0",
-    "lodash": "^4.17.10",
-    "node-fetch": "^2.6.0",
+    "date-fns": "^1.30.1",
+    "eosjs": "20.0.0",
+    "lodash": "4.17.14",
+    "node-fetch": "2.6.0",
     "yargs": "^12.0.2"
   },
   "engine": {
     "node": ">=8.0"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bitfinexcom/bfx-ext-js.git"
+    "url": "git+https://github.com/bitfinexcom/bfx-ext-eos-multisig-js.git"
   },
-  "maintainers": [
-    {
-      "name": "prdn",
-      "email": "paolo@bitfinex.com"
-    }
-  ],
   "devDependencies": {
+    "bfx-svc-test-helper": "git+https://github.com/bitfinexcom/bfx-svc-test-helper.git",
+    "eosjs-ecc": "^4.0.4",
     "mocha": "^5.2.0",
+    "nock": "^10.0.6",
     "standard": "^12.0.1"
   }
 }

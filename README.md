@@ -1,5 +1,7 @@
 # bfx-ext-eos-multisig
 
+Open source C++ to JS port
+
 ## Setup
 
 Run two Grapes:
@@ -15,6 +17,10 @@ git remote add upstream https://github.com/bitfinexcom/bfx-ext-js
 
 # Configure service:
 bash setup-config.sh
+
+
+# setup dev ssl certs (use just in dev!):
+cp -R sec-test sec
 ```
 
 Setup a useraccount with multiple keys, example for an existing account
@@ -40,36 +46,64 @@ cleos set account permission testuser1511 active '{"threshold" : 100, "keys" : [
 # verify changed keys
 ./cleos get account testuser1511
 
+
+# set public keys as `requiredKeys` in eosmultisig.ext.json
+
 ```
 
-### Boot worker
+### Boot workers
 
 ```
-node worker.js --env=development --wtype=wrk-ext-eos-multisig-api --apiPort 8337
+node worker.js --env=development --wtype=wrk-ext-eos-sign-proc
+
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338 --chain=main
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8337 --chain=main
+
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7338 --chain=side
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7337 --chain=side
+
+
+# to speed up developments and review, in development mode, passing of keys is possible via commandline:
+
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338 --chain=main --key=secret
 ```
+
+### Contract details / implementation details
+
+Ids in contract tables are increasing over time. To release **all** valid pending transactions, just the
+id of the oldest valid one is required, the contract will care of the other ids.
+
+Validation is done by comparing the time of the last irreversible block with the time stored in the table entry.
+
+`nexttrsid` is currently not used.
+
 
 ## Grenache API
 
-### action: 'getHelloWorld'
+### action: 'sign'
 
-  - `args`: &lt;Array&gt;
-    - `0`: &lt;Object&gt;
-      - `name`: &lt;String&gt; Name to greet
+  - `args <Array>`
+    - `0 <Object>`
+      - `tx <String>` Tx Uint8 Array encoded as hex
+      - `exp <String>` Expiry time of tx
+
 
 **Response:**
 
-  - &lt;String&gt; The Greeting
+  - `<Object>` tx status
 
 **Example Payload:**
 
 ```js
-args: [ { name: 'Paolo' } ]
+{ tx:
+   'EFD7145D65066DE414CA0000000001C0339BCEC8AEA65B00D4A44961A3A2BA01C0339BCEC8AEA65B00000000A8ED3232080C0000000000000000',
+  exp: '2019-06-27T14:51:27.000' }
 ```
 
 **Example Response:**
 
 ```js
-'Hello Paolo'
+{ sentToChain: true }
 ```
 
 Example: [example.js](example.js)
