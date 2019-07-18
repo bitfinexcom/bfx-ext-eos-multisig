@@ -1,5 +1,5 @@
 {
-  "grcBaseName": "rest:ext:eos-multisig",
+  "grcBaseName": "sec:rest:ext:eos-multisig",
 
   "main": {
     "eos": {

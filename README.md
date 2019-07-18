@@ -21,6 +21,11 @@ bash setup-config.sh
 
 # setup dev ssl certs (use just in dev!):
 cp -R sec-test sec
+
+# add a dev key to run integration tests:
+# in eosmultisig.ext.json set for main/side:
+
+"privateKey": "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3"
 ```
 
 Setup a useraccount with multiple keys, example for an existing account
