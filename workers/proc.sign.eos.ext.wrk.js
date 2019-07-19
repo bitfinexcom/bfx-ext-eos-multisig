@@ -65,7 +65,10 @@ class WrkEosSignMultisigProc extends WrkBase {
 
   process () {
     this._process('main', 'side')
-    this._process('side', 'main')
+
+    setTimeout(() => {
+      this._process('side', 'main')
+    }, 5000)
   }
 
   async _getLastIrreversibleBlockData (localRpc, remoteRpc) {
@@ -219,7 +222,7 @@ class WrkEosSignMultisigProc extends WrkBase {
         console.error('ERR_GRAPE_LOOKUP_EMPTY')
         setTimeout(() => {
           this._process(local, remote)
-        }, 1000 * 3)
+        }, 1000 * 20)
 
         return
       }
@@ -229,9 +232,10 @@ class WrkEosSignMultisigProc extends WrkBase {
         if (res) console.error(res)
       }
 
+      const delay = Math.floor(Math.random() * 5000) + 2000
       setTimeout(() => {
         this._process(local, remote)
-      }, 2000)
+      }, delay)
     })
   }
 
