@@ -1,6 +1,16 @@
 # bfx-ext-eos-multisig
 
-Open source C++ to JS port
+Open source C++ to JS port.
+
+
+A setup will need one `proc` worker (`proc.sign.eos.ext.wrk.js`).
+
+It will pull open transactions from the contract gateways via the HTTP API of the main and sidechain.
+
+It creates an *unsigned* transaction and sends it to the network, to the api workers (`api.sign.eos.ext.wrk.js`)
+for signing.
+
+Once the amount of required signatures is reached, the transaction is sent to the chain.
 
 ## Setup
 
