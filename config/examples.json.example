@@ -8,4 +8,14 @@
     "actor": "",
     "permission": "active"
   }]
+
+  "testkeys": [
+    "SECRET",
+    "SECRET",
+    "SECRET",
+    "SECRET"
+  ],
+
+  "testHttpEndpointSide": "http://___MY_EOS_NODE___",
+  "testHttpEndpointMain": "http://___MY_EOS_NODE___"
 }

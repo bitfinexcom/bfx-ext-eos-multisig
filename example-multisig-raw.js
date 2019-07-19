@@ -22,7 +22,7 @@ function getApi (kp) {
 
   const api = new Api({
     rpc,
-    signatureProvider: getApi,
+    signatureProvider: kp,
     textDecoder: new TextDecoder(),
     textEncoder: new TextEncoder()
   })
@@ -66,7 +66,6 @@ function getApi (kp) {
 
     const rpc = new JsonRpc(httpEndpoint, { fetch })
     const res = await rpc.push_transaction(b)
-
     console.log(res)
   } catch (e) {
     console.error(e)

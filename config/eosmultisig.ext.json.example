@@ -1,5 +1,39 @@
 {
-  "grcServices": [
-    "rest:ext:eos-multisig"
-  ]
+  "grcBaseName": "sec:rest:ext:eos-multisig",
+
+  "main": {
+    "eos": {
+      "contract": "finexmaingtw",
+      "authorization": [{
+        "actor": "finexmaingtw",
+        "permission": "active"
+      }],
+
+      "httpEndpoint": "http://__REPLACE__ME:8889",
+      "privateKey": "__SECRET__",
+      "chainId": "8576a1bea08194d78e9adc582b50175d7f160ba750923fdb1113cfc521c49837"
+    },
+    "requiredKeys": [
+      "__PUBKEY1__",
+      "__PUBKEY2__"
+    ]
+  },
+
+  "side": {
+    "eos": {
+      "contract": "finexsidegtw",
+      "authorization": [{
+        "actor": "finexsidegtw",
+        "permission": "active"
+      }],
+
+      "httpEndpoint": "http://__REPLACE__ME:8888",
+      "privateKey": "__SECRET__",
+      "chainId": "8576a1bea08194d78e9adc582b50175d7f160ba750923fdb1113cfc521c49837"
+    },
+    "requiredKeys": [
+      "__PUBKEY1__",
+      "__PUBKEY2__"
+    ]
+  }
 }
