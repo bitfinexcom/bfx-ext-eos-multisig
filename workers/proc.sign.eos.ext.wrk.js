@@ -156,7 +156,7 @@ class WrkEosSignMultisigProc extends WrkBase {
 
           console.log('rtime', rTime, tMil)
           if (rTime < tMil) {
-            console.log('pendingRelDone abort:', id, rTime, '<', time)
+            console.log('pendingRelDone abort:', id, rTime, '<', tMil)
             return false
           }
 
@@ -191,7 +191,7 @@ class WrkEosSignMultisigProc extends WrkBase {
 
           console.log('ltime', lTime, tMil)
           if (lTime < tMil) {
-            console.log('pendingTransfers abort:', id, lTime, '<', time)
+            console.log('pendingTransfers abort:', id, lTime, '<', tMil)
             throw new ProcessingError('ERR_PND_TRANSFERS')
           }
 
