@@ -83,6 +83,18 @@ node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7337 --
 node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338 --chain=main --key=secret
 ```
 
+### Debugging
+
+To see if the workers are reachable from another machine, run:
+
+```
+node test-grapes.js
+```
+
+It should print the IPs it will send the requests to and the request should fail with "outdated tx".
+
+Use `test.js` for running tests where users transfer tokens between main and sidechain.
+
 ### Contract details / implementation details
 
 Ids in contract tables are increasing over time. To release **all** valid pending transactions, just the
