@@ -204,9 +204,7 @@ class WrkEosSignMultisigProc extends WrkBase {
 
               return
             }
-          }
-
-          if (id === nextTransId) {
+          } else if (id === nextTransId) {
             console.log('releasing id:', id)
             await this.sendTx(remote, 'release', { id, account, quantity, memo })
 
