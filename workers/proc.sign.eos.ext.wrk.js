@@ -165,7 +165,8 @@ class WrkEosSignMultisigProc extends WrkBase {
 
         // also skip nextRelDoneId 0 (not found)
         if (!nextRelDoneId) {
-          return { lastDoneReleaseDoneId: 0 }
+          const lrdid = res.stateRemote.lastDoneReleaseDoneId
+          return { lastDoneReleaseDoneId: lrdid }
         }
 
         await this.sendTx(remote, 'releasedone', { id: nextRelDoneId })
@@ -181,7 +182,8 @@ class WrkEosSignMultisigProc extends WrkBase {
         console.log(local, 'processPendingTransfers', JSON.stringify(res))
         console.log('processing', res.pendingLocal)
 
-        let { nextTransId, lastDoneReleaseDoneId } = res.stateRemote
+        let { nextTransId } = res.stateRemote
+        let { lastDoneReleaseDoneId } = res.pendingRelDone
 
         const pendingTransfers = res.pendingLocal
         async.eachSeries(pendingTransfers, async (entry) => {
