@@ -59,7 +59,7 @@ function createTx (api, contract, action, data, auth) {
 exports.signTx = signTx
 function signTx (data, signer, reqKeys, cb) {
   const { signatureProvider, chainId } = signer
-  const { transfer, id, tx, exp, signatures, publicKeys } = data
+  const { transfer, tx, exp, signatures, publicKeys, id } = data
 
   transfer.requiredKeys = reqKeys
   transfer.chainId = chainId
@@ -73,8 +73,8 @@ function signTx (data, signer, reqKeys, cb) {
         publicKeys: pubKeys.concat(reqKeys),
         signatures: signed.signatures.concat(sigs),
         tx: tx,
-        id: id,
-        exp: exp
+        exp: exp,
+        id
       }
 
       cb(null, res)
@@ -89,7 +89,8 @@ function sign (data, signer, cb) {
       isValidTx(data, cb)
     },
     (cb) => {
-      getKeysForSign(data, signer.signatureProvider, cb)
+      const keys = getKeysForSign(signer.signatureProvider.availableKeys, data)
+      cb(null, keys)
     },
     (reqKeys, cb) => {
       if (reqKeys.length === 0) {
@@ -120,19 +121,17 @@ function sign (data, signer, cb) {
 }
 
 exports.getKeysForSign = getKeysForSign
-function getKeysForSign (data, signatureProvider, cb) {
-  const ownKeys = signatureProvider.availableKeys
-
+function getKeysForSign (availableKeys, data) {
   if (!data.publicKeys) {
-    return cb(null, ownKeys)
+    return availableKeys
   }
 
-  const missing = _.difference(ownKeys, data.publicKeys)
+  const missing = _.difference(availableKeys, data.publicKeys)
   if (missing.length) {
-    return cb(null, missing)
+    return missing
   }
 
-  return cb(null, [])
+  return []
 }
 
 exports.isValidTx = isValidTx

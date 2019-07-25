@@ -50,7 +50,7 @@ describe('unit util', () => {
     })
   })
 
-  it('getKeysForSign - not signed yet', (done) => {
+  it('getKeysForSign - not signed yet', () => {
     const key1 = ecc.seedPrivate('secret')
     const key2 = ecc.seedPrivate('secret2')
 
@@ -62,15 +62,11 @@ describe('unit util', () => {
     const signatureProvider = new JsSignatureProvider([key1, key2])
 
     const data = {}
-    getKeysForSign(data, signatureProvider, (err, res) => {
-      if (err) throw err
-
-      assert.deepStrictEqual(res, pubKeys)
-      done()
-    })
+    const res = getKeysForSign(signatureProvider.availableKeys, data)
+    assert.deepStrictEqual(res, pubKeys)
   })
 
-  it('getKeysForSign - fully signed', (done) => {
+  it('getKeysForSign - fully signed', () => {
     const key1 = ecc.seedPrivate('secret')
     const key2 = ecc.seedPrivate('secret2')
 
@@ -82,15 +78,12 @@ describe('unit util', () => {
     const signatureProvider = new JsSignatureProvider([key1, key2])
 
     const data = { publicKeys: pubKeys }
-    getKeysForSign(data, signatureProvider, (err, res) => {
-      if (err) throw err
+    const res = getKeysForSign(signatureProvider.availableKeys, data)
 
-      assert.deepStrictEqual(res, [])
-      done()
-    })
+    assert.deepStrictEqual(res, [])
   })
 
-  it('getKeysForSign - partially signed', (done) => {
+  it('getKeysForSign - partially signed', () => {
     const key1 = ecc.seedPrivate('secret')
     const key2 = ecc.seedPrivate('secret2')
 
@@ -102,15 +95,12 @@ describe('unit util', () => {
     const signatureProvider = new JsSignatureProvider([key1, key2])
 
     const data = { publicKeys: [pubKeys[0]] }
-    getKeysForSign(data, signatureProvider, (err, res) => {
-      if (err) throw err
+    const res = getKeysForSign(signatureProvider.availableKeys, data)
 
-      assert.deepStrictEqual(res, [pubKeys[1]])
-      done()
-    })
+    assert.deepStrictEqual(res, [pubKeys[1]])
   })
 
-  it('getKeysForSign - other signed', (done) => {
+  it('getKeysForSign - other signed', () => {
     const key1 = ecc.seedPrivate('secret')
     const key2 = ecc.seedPrivate('secret2')
 
@@ -122,13 +112,9 @@ describe('unit util', () => {
     const signatureProvider = new JsSignatureProvider([key1, key2])
 
     const data = { publicKeys: ['a', 'b'] }
+    const res = getKeysForSign(signatureProvider.availableKeys, data)
 
-    getKeysForSign(data, signatureProvider, (err, res) => {
-      if (err) throw err
-
-      assert.deepStrictEqual(res, pubKeys)
-      done()
-    })
+    assert.deepStrictEqual(res, pubKeys)
   })
 
   it('signTx', (done) => {
