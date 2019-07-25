@@ -92,16 +92,13 @@ class ExtSignEosMultisig extends Api {
       limit: 1
     }
 
-    const delay = Math.floor(Math.random() * 6000) + 1000
-    setTimeout(() => {
-      this.ctx.grc_bfx.map(
-        `rest:ext:eos-multisig-${this.ctx.chain}`,
-        'sign',
-        [tx],
-        opts,
-        cb
-      )
-    }, delay)
+    this.ctx.grc_bfx.map(
+      `rest:ext:eos-multisig-${this.ctx.chain}`,
+      'sign',
+      [tx],
+      opts,
+      cb
+    )
   }
 }
 

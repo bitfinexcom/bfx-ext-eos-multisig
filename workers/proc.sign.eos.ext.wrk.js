@@ -263,7 +263,8 @@ class WrkEosSignMultisigProc extends WrkBase {
 
   _sendTx (node, tx) {
     const opts = {
-      timeout: 300000
+      timeout: 10000,
+      limit: 1
     }
 
     const { grcBaseName } = this.conf.ext
