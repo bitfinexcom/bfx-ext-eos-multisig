@@ -6,32 +6,59 @@ const _ = require('lodash')
 
 const {
   sign,
-  addSerializedTx
+  addSerializedTx,
+  getKeysForSign
 } = require('../util')
 
 class ExtSignEosMultisig extends Api {
+  _getActionCache (des) {
+    const { getLocalCache } = this.ctx
+
+    const action = des.actions[0].name
+    return getLocalCache(action)
+  }
+
   sign (space, data, cb) {
-    const { signer, requiredKeys } = this.ctx
+    const { signer, rpc } = this.ctx
+    const { requiredKeys, availableKeys } = signer
+
+    const dataRepopulated = addSerializedTx(data)
+    const des = rpc.api.deserializeTransaction(
+      dataRepopulated.transfer.serializedTransaction
+    )
+
+    // did we already sign it?
+    const requiredFromUs = getKeysForSign(availableKeys, data)
+    if (requiredFromUs.length === 0) {
+      console.log('skipping already signed tx')
+      return cb(null, { duplicate: true })
+    }
+
+    const actionCache = this._getActionCache(des)
+    const id = des.actions[0].data
 
     async.waterfall([
       (next) => {
         sign(data, signer, (err, signed) => {
           if (err && err.message === 'ERR_OUTDATED_TX') {
+            // remove outdated
+            actionCache.remove(id)
             return next(err)
           }
 
           if (err && err.message === 'ERR_TX_ALREADY_SIGNED') {
-            return next(null, data)
+            return next(err)
           }
 
           if (err) return next(err)
+
+          actionCache.set(id, data)
 
           next(null, signed)
         })
       },
       (signed, next) => {
         const diff = _.difference(requiredKeys, signed.publicKeys)
-
         if (diff.length === 0) {
           this._sendTxToChain(signed, (err) => {
             if (err) return next(err)
@@ -57,6 +84,13 @@ class ExtSignEosMultisig extends Api {
         return cb(null, { duplicate: true })
       }
 
+      if (err && err.message === 'ERR_TX_ALREADY_SIGNED') {
+        return cb(null, { duplicate: true })
+      }
+
+      if (err && err.message === 'ERR_DUPLICATE_TX_INV_ID') {
+        return cb(null, { duplicate: true })
+      }
       if (err) {
         console.error(err)
       }
@@ -66,10 +100,11 @@ class ExtSignEosMultisig extends Api {
   }
 
   _sendTxToChain (data, cb) {
+    const localRpc = this.ctx.rpc
     const { signatures, transfer } = addSerializedTx(data)
 
     transfer.signatures = signatures
-    this.ctx.rpc.push_transaction(transfer)
+    localRpc.rpc.push_transaction(transfer)
       .then((res) => {
         cb(null, { tx: res })
       })
@@ -82,14 +117,17 @@ class ExtSignEosMultisig extends Api {
           return cb(new Error('ERR_DUPLICATE_TX'))
         }
 
+        if (err.json && err.json.error && err.json.error.code === 3050003) {
+          return cb(new Error('ERR_DUPLICATE_TX_INV_ID'))
+        }
+
         cb(err)
       })
   }
 
   _republishTx (tx, cb) {
     const opts = {
-      timeout: 300000,
-      limit: 1
+      timeout: 10000
     }
 
     this.ctx.grc_bfx.map(

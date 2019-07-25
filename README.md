@@ -69,8 +69,6 @@ cleos set account permission testuser1511 active '{"threshold" : 100, "keys" : [
 ### Boot workers
 
 ```
-node worker.js --env=development --wtype=wrk-ext-eos-sign-proc
-
 node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338 --chain=main
 node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8337 --chain=main
 

@@ -48,9 +48,17 @@ describe('RPC integration', () => {
   })
 
   it('discards outdated messages', (done) => {
+    const tx = {
+      publicKeys: [ 'PUB_K1_8Pb2CCFCF6ahveSub4LVPhqyzLo3Xg5YF2QXpnPHSU51xBt96a' ],
+      signatures: [ 'SIG_K1_KkFEMConFYb5FEzRxcnx4osXa9vsoekYeSd79zo3nHNbASm2mY8f1KbgioXPZPFQYjJM2vUc68vn9QemZjUoUC6FDGV4AS' ],
+      tx: '8DA8395DA1A7F9BD67E30000000001C0339BCEC8AEA65BA0264D572D3CCDCD01C0339BCEC8AEA65B000000C01BAEB26120D40100000000000030420857619DB1CA80A4BF0700000000085553445400000000',
+      exp: '2019-06-27T14:51:27.000',
+      id: 'D40100000000000030420857619DB1CA80A4BF07000000000855534454000000'
+    }
+
     const query = {
       action: 'sign',
-      args: [ { tx: 'foo', exp: '2019-06-27T14:51:27.000' } ]
+      args: [ tx ]
     }
 
     client.request(query, (err, data) => {
