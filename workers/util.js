@@ -10,6 +10,23 @@ const dns = require('date-fns')
 const _ = require('lodash')
 const async = require('async')
 
+exports.isTx = isTx
+function isTx (des) {
+  if (des.actions.length !== 1 ||
+    des.context_free_actions.length !== 0 ||
+    des.context_free_data ||
+    des.transaction_extensions.length !== 0) {
+    console.error('ERR_FATAL_INVALID_TX', des)
+    throw new Error('ERR_FATAL_INVALID_TX')
+  }
+
+  if (!dns.isFuture(des.expiration)) {
+    return false
+  }
+
+  return true
+}
+
 exports.getTimestamp = getTimestamp
 function getTimestamp (date) {
   if (typeof date !== 'string') {
@@ -59,7 +76,7 @@ function createTx (api, contract, action, data, auth) {
 exports.signTx = signTx
 function signTx (data, signer, reqKeys, cb) {
   const { signatureProvider, chainId } = signer
-  const { transfer, tx, exp, signatures, publicKeys, id } = data
+  const { transfer, tx, exp, signatures, publicKeys, id, cHint } = data
 
   transfer.requiredKeys = reqKeys
   transfer.chainId = chainId
@@ -74,7 +91,8 @@ function signTx (data, signer, reqKeys, cb) {
         signatures: signed.signatures.concat(sigs),
         tx: tx,
         exp: exp,
-        id
+        id,
+        cHint
       }
 
       cb(null, res)

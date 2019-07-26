@@ -10,7 +10,8 @@ const {
   getKeysForSign,
   signTx,
   addSerializedTx,
-  getTimestamp
+  getTimestamp,
+  isTx
 } = require('../workers/util.js')
 
 const {
@@ -34,6 +35,131 @@ describe('unit util', () => {
     assert.throws(() => {
       getTimestamp(null)
     })
+  })
+
+  it('isTx - all valid', () => {
+    const tx = {
+      'expiration': '2050-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [],
+      'actions': [{ 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': []
+    }
+
+    const res = isTx(tx)
+    assert.strictEqual(res, true)
+  })
+
+  it('isTx - date invalid', () => {
+    const tx = {
+      'expiration': '2000-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [],
+      'actions': [{ 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': []
+    }
+
+    const res = isTx(tx)
+    assert.strictEqual(res, false)
+  })
+
+  it('isTx - actions invalid', () => {
+    const tx = {
+      'expiration': '2000-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [],
+      'actions': [1, { 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': []
+    }
+
+    assert.throws(() => {
+      isTx(tx)
+    }, new Error('ERR_FATAL_INVALID_TX'))
+  })
+
+  it('isTx - context_free_actions invalid', () => {
+    const tx = {
+      'expiration': '2000-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [1],
+      'actions': [{ 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': []
+    }
+
+    assert.throws(() => {
+      isTx(tx)
+    }, new Error('ERR_FATAL_INVALID_TX'))
+  })
+
+  it('isTx - context_free_data invalid', () => {
+    const tx = {
+      'expiration': '2000-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [],
+      'context_free_data': [],
+      'actions': [{ 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': []
+    }
+
+    assert.throws(() => {
+      isTx(tx)
+    }, new Error('ERR_FATAL_INVALID_TX'))
+  })
+
+  it('isTx - transaction_extensions invalid', () => {
+    const tx = {
+      'expiration': '2000-07-26T13:48:29.000',
+      'ref_block_num': 29595,
+      'ref_block_prefix': 3916965506,
+      'max_net_usage_words': 0,
+      'max_cpu_usage_ms': 0,
+      'delay_sec': 0,
+      'context_free_actions': [],
+      'actions': [{ 'account': 'finexsidegtw',
+        'name': 'releasedone',
+        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
+        'data': '2F02000000000000' }],
+      'transaction_extensions': [1]
+    }
+
+    assert.throws(() => {
+      isTx(tx)
+    }, new Error('ERR_FATAL_INVALID_TX'))
   })
 
   it('isValidTx - outdated', (done) => {

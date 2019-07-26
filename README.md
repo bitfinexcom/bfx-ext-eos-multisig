@@ -2,13 +2,9 @@
 
 Open source C++ to JS port.
 
+One worker will pull open transactions from the contract gateways via the HTTP API of the main and sidechain.
 
-A setup will need one `proc` worker (`proc.sign.eos.ext.wrk.js`).
-
-It will pull open transactions from the contract gateways via the HTTP API of the main and sidechain.
-
-It creates an *unsigned* transaction and sends it to the network, to the api workers (`api.sign.eos.ext.wrk.js`)
-for signing.
+It creates a signed transaction and sends it to the network for signing.
 
 Once the amount of required signatures is reached, the transaction is sent to the chain.
 
@@ -69,11 +65,8 @@ cleos set account permission testuser1511 active '{"threshold" : 100, "keys" : [
 ### Boot workers
 
 ```
-node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338 --chain=main
-node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8337 --chain=main
-
-node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7338 --chain=side
-node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7337 --chain=side
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 8338
+node worker.js --env=development --wtype=wrk-ext-eos-sign-api  --apiPort 7338
 
 
 # to speed up developments and review, in development mode, passing of keys is possible via commandline:
