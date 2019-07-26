@@ -59,7 +59,7 @@ function createTx (api, contract, action, data, auth) {
 exports.signTx = signTx
 function signTx (data, signer, reqKeys, cb) {
   const { signatureProvider, chainId } = signer
-  const { transfer, tx, exp, signatures, publicKeys, id } = data
+  const { transfer, tx, exp, signatures, publicKeys, id, cHint } = data
 
   transfer.requiredKeys = reqKeys
   transfer.chainId = chainId
@@ -74,7 +74,8 @@ function signTx (data, signer, reqKeys, cb) {
         signatures: signed.signatures.concat(sigs),
         tx: tx,
         exp: exp,
-        id
+        id,
+        cHint
       }
 
       cb(null, res)

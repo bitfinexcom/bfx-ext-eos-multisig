@@ -6,36 +6,38 @@ const _ = require('lodash')
 
 const {
   sign,
-  addSerializedTx,
-  getKeysForSign
+  addSerializedTx
 } = require('../util')
 
 class ExtSignEosMultisig extends Api {
-  _getActionCache (des) {
-    const { getLocalCache } = this.ctx
+  _getCache (chain, des) {
+    const { getCache } = this.ctx
 
     const action = des.actions[0].name
-    return getLocalCache(action)
+    return getCache(chain, action)
   }
 
   sign (space, data, cb) {
-    const { signer, rpc } = this.ctx
-    const { requiredKeys, availableKeys } = signer
+    const { signers, rpcs, getChain } = this.ctx
 
     const dataRepopulated = addSerializedTx(data)
-    const des = rpc.api.deserializeTransaction(
+    const des = rpcs[data.cHint].api.deserializeTransaction(
       dataRepopulated.transfer.serializedTransaction
     )
 
-    // did we already sign it?
-    const requiredFromUs = getKeysForSign(availableKeys, data)
-    if (requiredFromUs.length === 0) {
-      console.log('skipping already signed tx')
-      return cb(null, { duplicate: true })
-    }
+    const chain = getChain(des)
+    const signer = signers[chain]
+    const { requiredKeys } = signer
 
-    const actionCache = this._getActionCache(des)
+    const actionCache = this._getCache(chain, des)
     const id = des.actions[0].data
+    const ltx = actionCache.get(id)
+
+    // did we already cache it?
+    if (!ltx) {
+      console.log('tx not cached locally, skipping')
+      return cb(null, { no_cache: true })
+    }
 
     async.waterfall([
       (next) => {
@@ -52,15 +54,13 @@ class ExtSignEosMultisig extends Api {
 
           if (err) return next(err)
 
-          actionCache.set(id, data)
-
           next(null, signed)
         })
       },
       (signed, next) => {
         const diff = _.difference(requiredKeys, signed.publicKeys)
         if (diff.length === 0) {
-          this._sendTxToChain(signed, (err) => {
+          this._sendTxToChain(chain, signed, (err) => {
             if (err) return next(err)
 
             return next(null, { sentToChain: true })
@@ -99,8 +99,9 @@ class ExtSignEosMultisig extends Api {
     })
   }
 
-  _sendTxToChain (data, cb) {
-    const localRpc = this.ctx.rpc
+  _sendTxToChain (chain, data, cb) {
+    const localRpc = this.ctx.rpcs[chain]
+
     const { signatures, transfer } = addSerializedTx(data)
 
     transfer.signatures = signatures
@@ -131,7 +132,7 @@ class ExtSignEosMultisig extends Api {
     }
 
     this.ctx.grc_bfx.map(
-      `rest:ext:eos-multisig-${this.ctx.chain}`,
+      this.ctx.grcBaseName,
       'sign',
       [tx],
       opts,

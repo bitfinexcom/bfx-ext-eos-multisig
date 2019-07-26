@@ -64,6 +64,11 @@ class WrkExtEosSignMultisigApi extends WrkApi {
       side: this.setupSigner('side')
     }
 
+    this.contracts = {
+      main: this.conf.ext.main.eos.contract,
+      side: this.conf.ext.side.eos.contract
+    }
+
     this.process()
 
     cb()
@@ -96,10 +101,26 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     return this.caches[chain][action]
   }
 
+  getChain (des) {
+    const account = des.actions[0].account
+    const { main, side } = this.contracts
+
+    if (account === main) {
+      return 'main'
+    }
+
+    if (account === side) {
+      return 'side'
+    }
+
+    console.error(des)
+    throw new Error('FATAL_ERR_NO_MATCH')
+  }
+
   getGrcServices () {
     const { grcBaseName } = this.conf.ext
 
-    return [`${grcBaseName}-${this.ctx.chain}`]
+    return [`${grcBaseName}`]
   }
 
   setupSigner (chain) {
@@ -109,7 +130,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     const requiredKeysLeg = chainConf.requiredKeys
     const requiredKeys = Numeric.convertLegacyPublicKeys(requiredKeysLeg)
 
-    const privateKey = this.getKey()
+    const privateKey = this.getKey(chain)
     const signatureProvider = new JsSignatureProvider([ privateKey ])
     const availableKeys = signatureProvider.availableKeys
 
@@ -129,10 +150,13 @@ class WrkExtEosSignMultisigApi extends WrkApi {
 
     switch (type) {
       case 'api_bfx':
-        ctx.signer = this.signers[this.ctx.chain]
+        ctx.signers = this.signers
         ctx.chain = this.ctx.chain
-        ctx.rpc = this.rpcs[this.ctx.chain]
-        ctx.getLocalCache = this.getCache.bind(this, this.ctx.chain)
+        ctx.rpcs = this.rpcs
+        ctx.getCache = this.getCache.bind(this)
+        ctx.grcBaseName = this.conf.ext.grcBaseName
+        ctx.getChain = this.getChain.bind(this)
+
         break
     }
 
@@ -140,14 +164,11 @@ class WrkExtEosSignMultisigApi extends WrkApi {
   }
 
   async process () {
-    const local = this.ctx.chain
-    let remote = 'main'
+    this._process('main', 'side')
 
-    if (local === 'main') {
-      remote = 'side'
-    }
-
-    this._process(local, remote)
+    setTimeout(() => {
+      this._process('side', 'main')
+    }, 2000)
   }
 
   async _getLastIrreversibleBlockData (localRpc, remoteRpc) {
@@ -309,14 +330,14 @@ class WrkExtEosSignMultisigApi extends WrkApi {
         if (res) console.error(res)
       }
 
-      const delay = Math.floor(Math.random() * 6000) + 20000
+      const delay = Math.floor(Math.random() * (5000 - 2000) + 2000)
       setTimeout(() => {
         this._process(local, remote)
       }, delay)
     })
   }
 
-  getKey () {
+  getKey (chain) {
     if (this.ctx.key && this.ctx.env === 'development') {
       return this.ctx.key
     }
@@ -325,7 +346,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
       throw new Error('ERR_KEY_DEV: keys via commandline not possible in production')
     }
 
-    const key = this.conf.ext[this.ctx.chain].eos.privateKey
+    const key = this.conf.ext[chain].eos.privateKey
     return key
   }
 
@@ -354,7 +375,8 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     const entry = {
       tx: eos.Serialize.arrayToHex(tx.serializedTransaction),
       exp: des.expiration,
-      id
+      id,
+      cHint: node
     }
 
     const res = await this.sign(entry, this.signers[node])
@@ -369,12 +391,11 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     }
 
     const { grcBaseName } = this.conf.ext
-
-    console.log('pushing to', `${grcBaseName}-${node}`)
+    console.log('pushing to', `${grcBaseName}`)
     console.log('tx', tx)
 
     return this.mapRequests(
-      `${grcBaseName}-${node}`,
+      grcBaseName,
       'sign',
       [tx],
       opts
