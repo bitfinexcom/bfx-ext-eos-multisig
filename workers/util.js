@@ -10,6 +10,23 @@ const dns = require('date-fns')
 const _ = require('lodash')
 const async = require('async')
 
+exports.isTx = isTx
+function isTx (des) {
+  if (des.actions.length !== 1 ||
+    des.context_free_actions.length !== 0 ||
+    des.context_free_data ||
+    des.transaction_extensions.length !== 0) {
+    console.error('ERR_FATAL_INVALID_TX', des)
+    throw new Error('ERR_FATAL_INVALID_TX')
+  }
+
+  if (!dns.isFuture(des.expiration)) {
+    return false
+  }
+
+  return true
+}
+
 exports.getTimestamp = getTimestamp
 function getTimestamp (date) {
   if (typeof date !== 'string') {

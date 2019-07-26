@@ -6,7 +6,8 @@ const _ = require('lodash')
 
 const {
   sign,
-  addSerializedTx
+  addSerializedTx,
+  isTx
 } = require('../util')
 
 class ExtSignEosMultisig extends Api {
@@ -37,6 +38,10 @@ class ExtSignEosMultisig extends Api {
     if (!ltx) {
       console.log('tx not cached locally, skipping')
       return cb(null, { no_cache: true })
+    }
+
+    if (!isTx(des)) {
+      return cb(null, { outdated: true })
     }
 
     async.waterfall([
