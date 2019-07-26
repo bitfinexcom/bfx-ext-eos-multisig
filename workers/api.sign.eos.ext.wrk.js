@@ -188,12 +188,12 @@ class WrkExtEosSignMultisigApi extends WrkApi {
         return data.rows
       },
 
-      lastIrreversibleBlockTimes: async () => {
+      lastIrreversibleBlockTimes: ['pendingLocal', async () => {
         const res = await this._getLastIrreversibleBlockData(localRpc, remoteRpc)
         return res
-      },
+      }],
 
-      stateRemote: ['lastIrreversibleBlockTimes', 'pendingLocal', async () => {
+      stateRemote: ['lastIrreversibleBlockTimes', async () => {
         const data = await remoteRpc.getTableRows({ table: TABLE_STATE, limit: 1 })
 
         if (JSON.stringify(state[local].plocal) !== JSON.stringify(data.rows)) {
