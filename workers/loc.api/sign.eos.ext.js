@@ -34,6 +34,11 @@ class ExtSignEosMultisig extends Api {
     const id = des.actions[0].data
     const ltx = actionCache.get(id)
 
+    if (chain !== data.cHint) {
+      console.error('ERR_BAD_CHINT')
+      throw new Error('ERR_BAD_CHINT')
+    }
+
     // did we already cache it?
     if (!ltx) {
       console.log('tx not cached locally, skipping')
