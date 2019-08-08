@@ -22,6 +22,7 @@ grape --dp 20002 --aph 40001 --bn '127.0.0.1:20001'
 git remote add upstream https://github.com/bitfinexcom/bfx-ext-js
 
 # Configure service:
+mkdir db
 bash setup-config.sh
 
 

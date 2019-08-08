@@ -35,5 +35,11 @@
       "__PUBKEY1__",
       "__PUBKEY2__"
     ]
+  },
+
+  "alarms": {
+    "grc": "__GRC_SERVICE__",
+    "action": "__GRC_ACTION__",
+    "channel": "test-robert-public"
   }
 }
