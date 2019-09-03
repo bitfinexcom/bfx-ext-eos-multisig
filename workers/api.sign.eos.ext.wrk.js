@@ -45,6 +45,15 @@ class WrkExtEosSignMultisigApi extends WrkApi {
 
   init () {
     super.init()
+
+    this.setInitFacs([
+      ['fac', 'bfx-facs-db-sqlite', 'main', 'main', {
+        name: this.prefix,
+        persist: true
+      }],
+      ['fac', 'bfx-facs-monitor-tx', 'main', 'main', {}]
+    ])
+
     this.rpcs = {
       main: {
         ...this._setupRpc('main')
@@ -56,8 +65,14 @@ class WrkExtEosSignMultisigApi extends WrkApi {
   }
 
   _start0 (cb) {
+    this.txMonitor = this.monitorTx_main
+
     this.mapRequests = util.promisify(this.grc_bfx.map).bind(this.grc_bfx)
     this.sign = util.promisify(sign).bind(sign)
+
+    this.monitorTx = util.promisify(
+      this.monitorTx_main.monitorTx
+    ).bind(this.monitorTx_main)
 
     this.signers = {
       main: this.setupSigner('main'),
@@ -165,7 +180,6 @@ class WrkExtEosSignMultisigApi extends WrkApi {
 
   async process () {
     this._process('main', 'side')
-
     setTimeout(() => {
       this._process('side', 'main')
     }, 2000)
@@ -351,7 +365,8 @@ class WrkExtEosSignMultisigApi extends WrkApi {
   }
 
   async sendTx (node, action, payload) {
-    console.log('send tx')
+    console.log('send tx', node)
+
     const rpc = this.rpcs[node]
     const tx = await createTx(
       rpc.api,
@@ -372,6 +387,32 @@ class WrkExtEosSignMultisigApi extends WrkApi {
       return
     }
 
+    if (node === 'main' && action === 'release') {
+      // https://github.com/EOSIO/eosjs/issues/578
+      const { quantity, account } = payload
+      let [ amount, currency ] = quantity.split(' ')
+
+      currency = currency.trim()
+      if (!currency) {
+        throw new Error('ERR_WRONG_FORMAT')
+      }
+
+      const args = {
+        user: account,
+        token: currency,
+        amount: +amount
+      }
+
+      const res = await this.monitorTx(args)
+      res.users.forEach((msg) => {
+        this._sendAlarm(msg)
+      })
+
+      res.global.forEach((msg) => {
+        this._sendAlarm(msg)
+      })
+    }
+
     const entry = {
       tx: eos.Serialize.arrayToHex(tx.serializedTransaction),
       exp: des.expiration,
@@ -382,10 +423,22 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     const res = await this.sign(entry, this.signers[node])
     cache.set(id, res)
 
-    await this._sendTx(node, res)
+    await this._mapTx(node, res)
   }
 
-  _sendTx (node, tx) {
+  _sendAlarm (msg) {
+    const { alarms } = this.conf.ext
+
+    this.grc_bfx.req(
+      alarms.grc,
+      alarms.action,
+      [{ channel: alarms.channel, text: msg }],
+      { timeout: 10000 },
+      (err) => { if (err) console.error(err) }
+    )
+  }
+
+  _mapTx (node, tx) {
     const opts = {
       timeout: 10000
     }
