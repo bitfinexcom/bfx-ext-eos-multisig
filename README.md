@@ -10,11 +10,14 @@ Once the amount of required signatures is reached, the transaction is sent to th
 
 ## Setup
 
-Run two Grapes:
+Run two Grape rings:
 
 ```
 grape --dp 20001 --aph 30001 --bn '127.0.0.1:20002'
 grape --dp 20002 --aph 40001 --bn '127.0.0.1:20001'
+
+grape --dp 21001 --aph 50001 --bn '127.0.0.1:21002'
+grape --dp 21002 --aph 60001 --bn '127.0.0.1:21001'
 ```
 
 ```
