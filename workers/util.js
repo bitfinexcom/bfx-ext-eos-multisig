@@ -81,7 +81,7 @@ function signTx (data, signer, reqKeys, cb) {
   transfer.requiredKeys = reqKeys
   transfer.chainId = chainId
 
-  let sigs = signatures || []
+  const sigs = signatures || []
   const pubKeys = publicKeys || []
   signatureProvider
     .sign(transfer)
@@ -120,12 +120,12 @@ function sign (data, signer, cb) {
     }
   ], (err, signedTx) => {
     if (err && err.message === 'ERR_OUTDATED_TX') {
-      console.log(`skipped outdated tx`)
+      console.log('skipped outdated tx')
       return cb(err)
     }
 
     if (err && err.message === 'ERR_TX_ALREADY_SIGNED') {
-      console.log(`skipped already signed tx`)
+      console.log('skipped already signed tx')
       return cb(err)
     }
 

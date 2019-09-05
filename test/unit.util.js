@@ -39,18 +39,20 @@ describe('unit util', () => {
 
   it('isTx - all valid', () => {
     const tx = {
-      'expiration': '2050-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [],
-      'actions': [{ 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': []
+      expiration: '2050-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [],
+      actions: [{
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: []
     }
 
     const res = isTx(tx)
@@ -59,18 +61,20 @@ describe('unit util', () => {
 
   it('isTx - date invalid', () => {
     const tx = {
-      'expiration': '2000-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [],
-      'actions': [{ 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': []
+      expiration: '2000-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [],
+      actions: [{
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: []
     }
 
     const res = isTx(tx)
@@ -79,18 +83,20 @@ describe('unit util', () => {
 
   it('isTx - actions invalid', () => {
     const tx = {
-      'expiration': '2000-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [],
-      'actions': [1, { 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': []
+      expiration: '2000-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [],
+      actions: [1, {
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: []
     }
 
     assert.throws(() => {
@@ -100,18 +106,20 @@ describe('unit util', () => {
 
   it('isTx - context_free_actions invalid', () => {
     const tx = {
-      'expiration': '2000-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [1],
-      'actions': [{ 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': []
+      expiration: '2000-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [1],
+      actions: [{
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: []
     }
 
     assert.throws(() => {
@@ -121,19 +129,21 @@ describe('unit util', () => {
 
   it('isTx - context_free_data invalid', () => {
     const tx = {
-      'expiration': '2000-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [],
-      'context_free_data': [],
-      'actions': [{ 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': []
+      expiration: '2000-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [],
+      context_free_data: [],
+      actions: [{
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: []
     }
 
     assert.throws(() => {
@@ -143,18 +153,20 @@ describe('unit util', () => {
 
   it('isTx - transaction_extensions invalid', () => {
     const tx = {
-      'expiration': '2000-07-26T13:48:29.000',
-      'ref_block_num': 29595,
-      'ref_block_prefix': 3916965506,
-      'max_net_usage_words': 0,
-      'max_cpu_usage_ms': 0,
-      'delay_sec': 0,
-      'context_free_actions': [],
-      'actions': [{ 'account': 'finexsidegtw',
-        'name': 'releasedone',
-        'authorization': [{ 'actor': 'finexsidegtw', 'permission': 'gateway' }],
-        'data': '2F02000000000000' }],
-      'transaction_extensions': [1]
+      expiration: '2000-07-26T13:48:29.000',
+      ref_block_num: 29595,
+      ref_block_prefix: 3916965506,
+      max_net_usage_words: 0,
+      max_cpu_usage_ms: 0,
+      delay_sec: 0,
+      context_free_actions: [],
+      actions: [{
+        account: 'finexsidegtw',
+        name: 'releasedone',
+        authorization: [{ actor: 'finexsidegtw', permission: 'gateway' }],
+        data: '2F02000000000000'
+      }],
+      transaction_extensions: [1]
     }
 
     assert.throws(() => {

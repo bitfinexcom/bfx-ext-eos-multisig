@@ -21,7 +21,7 @@ const payload = {
 
 const query = {
   action: 'sign',
-  args: [ payload ]
+  args: [payload]
 }
 
 peer.map('rest:ext:eos-multisig-main', query, { timeout: 10000 }, (err, data) => {
