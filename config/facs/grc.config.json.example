@@ -4,8 +4,8 @@
     "transport": "http",
     "protos": ["sec"]
   },
-  "p1": {
-    "grape": "http://127.0.0.1:30001",
+  "alrm": {
+    "grape": "http://127.0.0.1:50001",
     "transport": "http",
     "protos": ["sec"]
   }

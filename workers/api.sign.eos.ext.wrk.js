@@ -51,7 +51,10 @@ class WrkExtEosSignMultisigApi extends WrkApi {
         name: this.prefix,
         persist: true
       }],
-      ['fac', 'bfx-facs-monitor-tx', 'main', 'main', {}]
+      ['fac', 'bfx-facs-monitor-tx', 'main', 'main', {}],
+      ['fac', 'bfx-facs-grc', 'alrm', 'alrms', () => {
+        return { svc_port: null, services: [] }
+      }, 2],
     ])
 
     this.rpcs = {
@@ -429,7 +432,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
   _sendAlarm (msg) {
     const { alarms } = this.conf.ext
 
-    this.grc_bfx.req(
+    this.grc_alrms.req(
       alarms.grc,
       alarms.action,
       [{ channel: alarms.channel, text: msg }],
