@@ -50,7 +50,7 @@ const rpcs = {
 function getBalances (rpcs, users, cb = () => {}) {
   const tasks = users.map((user) => {
     return async function bTask () {
-      const [ username ] = user
+      const [username] = user
 
       const sideb = await rpcs.side.rpc.get_currency_balance('eosio.token', username)
       const mainb = await rpcs.main.rpc.get_currency_balance('efinextether', username)

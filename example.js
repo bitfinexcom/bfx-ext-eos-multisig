@@ -23,7 +23,7 @@ const payload = {
 
 const query = {
   action: 'sign',
-  args: [ payload ]
+  args: [payload]
 }
 
 peer.request(service, query, { timeout: 10000 }, (err, data) => {

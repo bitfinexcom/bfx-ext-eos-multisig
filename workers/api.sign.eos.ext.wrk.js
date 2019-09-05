@@ -35,8 +35,8 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     this.loadConf('eosmultisig.ext', 'ext')
 
     this.caches = {
-      'side': {},
-      'main': {}
+      side: {},
+      main: {}
     }
 
     this.init()
@@ -146,7 +146,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     const requiredKeys = Numeric.convertLegacyPublicKeys(requiredKeysLeg)
 
     const privateKey = this.getKey(chain)
-    const signatureProvider = new JsSignatureProvider([ privateKey ])
+    const signatureProvider = new JsSignatureProvider([privateKey])
     const availableKeys = signatureProvider.availableKeys
 
     const signer = {
@@ -297,7 +297,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
         console.log('processing', res.pendingLocal)
 
         let { nextTransId } = res.stateRemote
-        let { lastDoneReleaseDoneId } = res.pendingRelDone
+        const { lastDoneReleaseDoneId } = res.pendingRelDone
 
         const pendingTransfers = res.pendingLocal
         async.eachSeries(pendingTransfers, async (entry) => {
@@ -390,7 +390,7 @@ class WrkExtEosSignMultisigApi extends WrkApi {
     if (node === 'main' && action === 'release') {
       // https://github.com/EOSIO/eosjs/issues/578
       const { quantity, account } = payload
-      let [ amount, currency ] = quantity.split(' ')
+      let [amount, currency] = quantity.split(' ')
 
       currency = currency.trim()
       if (!currency) {

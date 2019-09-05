@@ -76,7 +76,7 @@ function getApi (kp) {
     transfer.requiredKeys = keys
     transfer.chainId = chainId
 
-    let sigs = transfer.signatures || null
+    const sigs = transfer.signatures || null
     const signed = await signatureProvider.sign(transfer)
 
     if (sigs) {
