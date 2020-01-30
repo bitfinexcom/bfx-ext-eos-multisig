@@ -240,8 +240,8 @@ class WrkExtEosSignMultisigApi extends WrkApi {
         }
 
         const res = {
-          nextTransId: data.rows[0].nextrelid || 1,
-          lastDoneReleaseDoneId: data.rows[0].lstreldoneid || 0
+          nextTransId: data.rows && data.rows[0] && data.rows[0].nextrelid || 1,
+          lastDoneReleaseDoneId: data.rows && data.rows[0] && data.rows[0].lstreldoneid || 0
         }
 
         if (typeof res.nextTransId !== 'number' || typeof res.lastDoneReleaseDoneId !== 'number') {
